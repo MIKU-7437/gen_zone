@@ -103,10 +103,12 @@ WSGI_APPLICATION = 'gen_zone.wsgi.application'
 # }
 DATABASES = {
     'default': {
-        'ENGINE': os.environ.get('POSTGRES_ENGINE', 'django.db.backends.sqlite3'),
-        'NAME': os.environ.get('POSTGRES_DB', BASE_DIR / 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.environ.get('POSTGRES_DB', 'railway'),  # Поменяйте 'railway' на ваше значение
         'USER': os.environ.get('POSTGRES_USER', 'postgres'),
-        'PASSWORD': os.environ.get('POSTGRES_PASSWORD', 'admin'),
+        'PASSWORD': os.environ.get('POSTGRES_PASSWORD', '35-*D63DEBC4bFB62F5gc*4E4-c5ef*d'),
+        'HOST': os.environ.get('RAILWAY_TCP_PROXY_DOMAIN', ''),  # Поменяйте '' на ваше значение
+        'PORT': os.environ.get('RAILWAY_TCP_PROXY_PORT', ''),  # Поменяйте '' на ваше значение
     }
 }
 
