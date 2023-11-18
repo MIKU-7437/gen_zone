@@ -104,10 +104,11 @@ WSGI_APPLICATION = 'gen_zone.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ.get('POSTGRES_DB', 'railway'),  # Поменяйте 'railway' на ваше значение
+        'NAME': os.environ.get('POSTGRES_DB', 'railway'),
         'USER': os.environ.get('POSTGRES_USER', 'postgres'),
         'PASSWORD': os.environ.get('POSTGRES_PASSWORD', '35-*D63DEBC4bFB62F5gc*4E4-c5ef*d'),
-        'PORT': '5432',
+        'PORT': os.environ.get('POSTGRES_HOST', 'monorail.proxy.rlwy.net'),
+        'HOST': os.environ.get('POSTGRES_PORT', 48808),
     }
 }
 
