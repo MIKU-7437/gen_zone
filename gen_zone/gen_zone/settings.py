@@ -176,10 +176,12 @@ EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
 
 CORS_ALLOWED_ORIGINS = [
     'https://genzone-production.up.railway.app',
+    'https://genzone-dev.up.railway.app',
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://genzone-production.up.railway.app'
+    'https://genzone-production.up.railway.app',
+    'https://genzone-dev.up.railway.app',
 ]
 
 #
