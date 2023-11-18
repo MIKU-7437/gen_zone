@@ -29,6 +29,7 @@ DEBUG = int(os.environ.get('DEBUG', default=1))
 
 ALLOWED_HOSTS = [
     'genzone-production.up.railway.app',
+    'genzone-dev.up.railway.app',
     'localhost',
     '127.0.0.1',
 ]
