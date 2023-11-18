@@ -1,1 +1,1 @@
-web: gunicorn gen_zone.wsgi
+web: sh -c 'cd gen_zone && gunicorn gen_zone.wsgi:application'
