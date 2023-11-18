@@ -26,7 +26,7 @@ from .views import HelloWorldView
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/account/', include('users.urls')),
-    path('api/courses/', include('courses.urls')),
+    # path('api/courses/', include('courses.urls')),
     #Test
     path('', HelloWorldView.as_view(), name='hello_world'),
 ]
