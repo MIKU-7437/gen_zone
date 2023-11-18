@@ -28,8 +28,8 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 DEBUG = int(os.environ.get('DEBUG', default=1))
 
 ALLOWED_HOSTS = [
-    'genzone-production.up.railway.app',
-    'genzone-development.up.railway.app',
+    'inquisitive-creature-production.up.railway.app',
+    'inquisitive-creature-development.up.railway.app',
     'localhost',
     '127.0.0.1',
 ]
@@ -176,13 +176,13 @@ EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
 
 CORS_ALLOWED_ORIGINS = [
-    'https://genzone-production.up.railway.app',
-    'https://genzone-development.up.railway.app',
+    'https://inquisitive-creature-production.up.railway.app/',
+    'https://inquisitive-creature-development.up.railway.app/',
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://genzone-production.up.railway.app',
-    'https://genzone-development.up.railway.app',
+    'https://inquisitive-creature-production.up.railway.app/',
+    'https://inquisitive-creature-development.up.railway.app/',
 ]
 
 #
