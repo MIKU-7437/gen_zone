@@ -29,7 +29,7 @@ DEBUG = int(os.environ.get('DEBUG', default=1))
 
 ALLOWED_HOSTS = [
     'genzone-production.up.railway.app',
-    'genzone-dev.up.railway.app',
+    'genzone-development.up.railway.app',
     'localhost',
     '127.0.0.1',
 ]
@@ -112,8 +112,8 @@ DATABASES = {
         'NAME': os.environ.get('POSTGRES_DB', 'railway'),
         'USER': os.environ.get('POSTGRES_USER', 'postgres'),
         'PASSWORD': os.environ.get('POSTGRES_PASSWORD', '35-*D63DEBC4bFB62F5gc*4E4-c5ef*d'),
-        'PORT': os.environ.get('POSTGRES_PORT', 48808),
-        'HOST': os.environ.get('POSTGRES_HOST', 'monorail.proxy.rlwy.net'),
+        'PORT': os.environ.get('POSTGRES_PORT', 32441),
+        'HOST': os.environ.get('POSTGRES_HOST', 'roundhouse.proxy.rlwy.net'),
     }
 }
 
@@ -177,12 +177,12 @@ EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
 
 CORS_ALLOWED_ORIGINS = [
     'https://genzone-production.up.railway.app',
-    'https://genzone-dev.up.railway.app',
+    'https://genzone-development.up.railway.app',
 ]
 
 CSRF_TRUSTED_ORIGINS = [
     'https://genzone-production.up.railway.app',
-    'https://genzone-dev.up.railway.app',
+    'https://genzone-development.up.railway.app',
 ]
 
 #
