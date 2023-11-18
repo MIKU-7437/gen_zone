@@ -178,13 +178,11 @@ EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
 
 CORS_ALLOWED_ORIGINS = [
-    'https://inquisitive-creature-production.up.railway.app',
-    'https://inquisitive-creature-development.up.railway.app',
+    '*'
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://inquisitive-creature-production.up.railway.app',
-    'https://inquisitive-creature-development.up.railway.app',
+    '*'
 ]
 
 #
