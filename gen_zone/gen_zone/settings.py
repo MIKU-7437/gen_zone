@@ -107,8 +107,8 @@ DATABASES = {
         'NAME': os.environ.get('POSTGRES_DB', 'railway'),
         'USER': os.environ.get('POSTGRES_USER', 'postgres'),
         'PASSWORD': os.environ.get('POSTGRES_PASSWORD', '35-*D63DEBC4bFB62F5gc*4E4-c5ef*d'),
-        'PORT': os.environ.get('POSTGRES_HOST', 'monorail.proxy.rlwy.net'),
-        'HOST': os.environ.get('POSTGRES_PORT', 48808),
+        'PORT': os.environ.get('POSTGRES_HOST', 48808),
+        'HOST': os.environ.get('POSTGRES_PORT', 'monorail.proxy.rlwy.net'),
     }
 }
 
