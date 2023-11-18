@@ -1,1 +1,1 @@
-web: gunicorn gwn_zone.wsgi
+web: gunicorn gen_zone.wsgi
