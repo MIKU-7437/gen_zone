@@ -8,12 +8,12 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         # Поля, которые будут включены в сериализацию
-        # fields = ('username','first_name', 'last_name', 'email', 'role', 'photo')
-        fields = '__all__'
+        fields = ('username','first_name', 'last_name', 'email', 'role', 'photo')
+        # fields = '__all__'
         # Установка полей только для чтения(не меняются)
         read_only_fields = ('email', 'username','role')
 
-    #redacting 'username' field depending on 'first_name' and 'last_name'
+    # redacting 'username' field depending on 'first_name' and 'last_name'
     def update(self, instance, validated_data):
         instance.first_name = validated_data.get('first_name', instance.first_name)
         instance.last_name = validated_data.get('last_name', instance.last_name)
@@ -51,22 +51,6 @@ class RegisterSerializer(serializers.ModelSerializer):
         user.save()
 
         return user
-
-
-# class RegisterSerializer(serializers.ModelSerializer):
-#     # Сериализатор для регистрации нового пользователя
-
-#     class Meta:
-#         model = User
-#         # Поля, которые будут включены в сериализацию
-#         fields = ['id', 'first_name', 'last_name', 'username', 'email', 'password']
-#         # Установка поля ID только для чтения
-#         read_only_fields = ['id']
-
-#     def create(self, validated_data):
-#         # Хеширование пароля перед сохранением пользователя
-#         validated_data["password"] = make_password(validated_data['password'])
-#         return User.objects.create(**validated_data)
 
 
 class EmailVerificationSerializer(serializers.ModelSerializer):

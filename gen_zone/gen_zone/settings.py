@@ -54,7 +54,7 @@ INSTALLED_APPS = [
     'drf_yasg',
 
     'users',
-    # 'courses',
+    'courses',
 ]
 
 MIDDLEWARE = [
@@ -189,6 +189,7 @@ CSRF_TRUSTED_ORIGINS = [
     'https://inquisitive-creature-development.up.railway.app',
     'http://localhost:5173',
     'https://localhost:5173',
+    'https://probable-sole-crucial.ngrok-free.app',
 ]
 
 #

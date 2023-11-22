@@ -1,6 +1,5 @@
 gen_zone/db.sqlite3
 gen_zone/media
-gen_zone/courses/
 Dockerfile
 docker-compose.yml
 .env/
