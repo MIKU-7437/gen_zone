@@ -4,6 +4,8 @@ from .utils import Util
 from rest_framework import status, generics, viewsets, permissions, mixins
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from django.core.exceptions import ValidationError
+from rest_framework_simplejwt.views import TokenObtainPairView
+from .serializers import CustomTokenObtainPairSerializer
 
 from rest_framework.response import Response
 from rest_framework.decorators import action
@@ -178,6 +180,9 @@ class VerifyEmailView(generics.GenericAPIView):
             # Обработка исключения невозможности декодирования токена
             return Response({'error': 'Invalid token'}, status=status.HTTP_400_BAD_REQUEST)
 
+
+class CustomTokenObtainPairView(TokenObtainPairView):
+    serializer_class = CustomTokenObtainPairSerializer
 
 #Testing logic
 class UserDetailView(APIView):
