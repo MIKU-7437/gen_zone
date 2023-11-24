@@ -1,15 +1,13 @@
 from rest_framework import serializers
-from .models import Course, Module, Lesson, Step, TextContent, ImageContent, VideoContent
+from .models import Course, Module, Lesson, Step, Content
 from users.serializers import UserSerializer
 
 
-#FOR SIDEBAR
+# for sidebar
 class SBLessonSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Lesson
         fields = ['lesson_num', 'lesson_title', 'lesson_description']
-
 
 class SBModuleSerializer(serializers.ModelSerializer):
     lessons = SBLessonSerializer(many=True, read_only=True)
@@ -18,7 +16,6 @@ class SBModuleSerializer(serializers.ModelSerializer):
         model = Module
         fields = ['module_num','module_title' ,'module_description', 'lessons']
 
-
 class SBCourseSerializer(serializers.ModelSerializer):
     modules = SBModuleSerializer(many=True, read_only=True)
     owner = UserSerializer(read_only=True)
@@ -26,6 +23,7 @@ class SBCourseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Course
         fields = [
+            'id',
             'title',
             'description',
             'owner',
@@ -34,68 +32,45 @@ class SBCourseSerializer(serializers.ModelSerializer):
             'price',
             'modules'
         ]
-
-#Usual  
-class ImageContentSerializer(serializers.ModelSerializer):
+    def get_preview_url(self, obj):
+        # Здесь создайте URL для изображения, используя его относительный путь
+        if obj.preview:
+            return self.context['request'].build_absolute_uri(obj.preview.url)
+        return None
+#usual
+class ContentSerializer(serializers.ModelSerializer):
     class Meta:
-        model = ImageContent
-        fields = '__all__'
-
-
-class TextContentSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = TextContent
-        fields = ['text']
-
-
-class VideoContentSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = VideoContent
-        fields = '__all__'
+        model = Content
+        fields = ['content_num', 'content_type', 'text', 'image', 'width', 'height']
 
 class StepSerializer(serializers.ModelSerializer):
-    text_contents = TextContentSerializer(many=True, read_only=True)
-    image_contents = ImageContentSerializer(many=True, read_only=True)
-    video_contents = VideoContentSerializer(many=True, read_only=True)
+    contents = ContentSerializer(many=True, read_only=True)
 
     class Meta:
         model = Step
-        fields = '__all__'
+        fields = ['step_num', 'contents']
 
 class LessonSerializer(serializers.ModelSerializer):
     steps = StepSerializer(many=True, read_only=True)
 
     class Meta:
         model = Lesson
-        fields = '__all__'
+        fields = ['lesson_num', 'lesson_title', 'lesson_description', 'steps']
 
 class ModuleSerializer(serializers.ModelSerializer):
     lessons = LessonSerializer(many=True, read_only=True)
 
     class Meta:
         model = Module
-        fields = '__all__'
+        fields = ['module_num', 'module_title' ,'module_description', 'lessons']
 
 class CourseSerializer(serializers.ModelSerializer):
-    modules = ModuleSerializer(many=True, read_only=True)
+    owner = UserSerializer(read_only=True)
+    modules = SBModuleSerializer(many=True, read_only=True)
 
     class Meta:
         model = Course
-        fields = '__all__'
-        depth = 2
-
-
-class FullStepSerializer(serializers.ModelSerializer):
-    text_contents = TextContentSerializer(many=True, read_only=True)
-
-    class Meta:
-        model = Step
-        fields = ['step_num','text_contents']
-
-
-class FullLessonSerializer(serializers.ModelSerializer):
-    steps = FullStepSerializer(many=True, read_only=True)
-
-    class Meta:
-        model = Step
-        fields = ['steps']
+        fields = ['id', 'title', 'description', 'owner', 'rating', 'preview', 'price', 'modules']
+        read_only_fields = ['rating', 'id', 'modules']
+        extra_kwargs = {'preview': {'required': False}}
+    

@@ -54,16 +54,29 @@ class Step(models.Model):
 def content_upload_path(instance, filename):
     return f'courses/{instance.step.lesson.module.course.title}_{instance.step.lesson.module.course.id}/{instance.step.lesson.module.module_title}/{instance.step.lesson.lesson_title}/{filename}'
 
-class TextContent(models.Model):
-    step = models.ForeignKey(Step, related_name='text_contents', on_delete=models.CASCADE)
-    text = models.TextField()
-    
 
-class ImageContent(models.Model):
-    step = models.ForeignKey(Step, related_name='image_contents', on_delete=models.CASCADE)
-    image = models.ImageField(upload_to=content_upload_path)
+class Content(models.Model):
+    TEXT_TYPE = 'text'
+    IMAGE_TYPE = 'image'
+    VIDEO_TYPE = 'video'
     
+    CONTENT_TYPES = [
+        (TEXT_TYPE, 'Text'),
+        (IMAGE_TYPE, 'Image'),
+        (VIDEO_TYPE, 'Video'),
+    ]
+    
+    step = models.ForeignKey(Step, related_name='contents', on_delete=models.CASCADE)
+    content_num = models.IntegerField()
+    content_type = models.CharField(max_length=10, choices=CONTENT_TYPES)
+    text = models.TextField(blank=True, null=True)
+    image = models.ImageField(upload_to=content_upload_path, blank=True, null=True)
+    width = models.CharField(max_length=10, blank=True, null=True)
+    height = models.CharField(max_length=10, blank=True, null=True)
 
-class VideoContent(models.Model):
-    step = models.ForeignKey(Step, related_name='video_contents', on_delete=models.CASCADE)
-    video_url = models.URLField()
+    class Meta:
+        unique_together = ['step', 'content_num']
+
+    def __str__(self):
+        return f'{self.step} - Content {self.content_num} ({self.get_content_type_display()})'
+
