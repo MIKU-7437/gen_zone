@@ -1,7 +1,9 @@
 from rest_framework import serializers
 from .models import Course, Module, Lesson, Step, TextContent, ImageContent, VideoContent
+from users.serializers import UserSerializer
 
 
+#FOR SIDEBAR
 class SBLessonSerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -19,6 +21,7 @@ class SBModuleSerializer(serializers.ModelSerializer):
 
 class SBCourseSerializer(serializers.ModelSerializer):
     modules = SBModuleSerializer(many=True, read_only=True)
+    owner = UserSerializer(read_only=True)
 
     class Meta:
         model = Course
@@ -79,7 +82,7 @@ class CourseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Course
         fields = '__all__'
-
+        depth = 2
 
 
 class FullStepSerializer(serializers.ModelSerializer):
@@ -87,4 +90,12 @@ class FullStepSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Step
-        fields = ['text_contents']
+        fields = ['step_num','text_contents']
+
+
+class FullLessonSerializer(serializers.ModelSerializer):
+    steps = FullStepSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Step
+        fields = ['steps']

@@ -9,8 +9,8 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         # Поля, которые будут включены в сериализацию
-        # fields = ('username','first_name', 'last_name', 'email', 'role', 'photo')
-        fields = '__all__'
+        fields = ('username','first_name', 'last_name', 'email', 'role', 'photo')
+        # fields = '__all__'
         # Установка полей только для чтения(не меняются)
         read_only_fields = ('email', 'username','role')
 
@@ -23,6 +23,7 @@ class UserSerializer(serializers.ModelSerializer):
 
         serializer = UserSerializer(instance, data=validated_data)
         return super().update(instance, validated_data)
+
 
 class RegisterSerializer(serializers.ModelSerializer):
     password_conf = serializers.CharField(write_only=True)  # Поле для подтверждения пароля
