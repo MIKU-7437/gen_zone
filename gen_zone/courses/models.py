@@ -1,5 +1,7 @@
 from django.db import models
 from users.models import User
+from django.core.exceptions import ValidationError
+
 
 def course_preview_upload_path(instance, filename):
     return f'courses/{instance.title}_{instance.id}/preview/{filename}'
@@ -14,6 +16,10 @@ class Course(models.Model):
 
     def __str__(self):
         return self.title
+    
+    def clean(self):
+        if not self.preview:
+            raise ValidationError({'preview': 'Это поле обязательно.'})
 
 class Module(models.Model):
     course = models.ForeignKey(Course, related_name='modules', on_delete=models.CASCADE)
@@ -26,6 +32,8 @@ class Module(models.Model):
     
     class Meta:
         unique_together = ['course', 'module_num']
+
+    
 
 class Lesson(models.Model):
     module = models.ForeignKey(Module, related_name='lessons', on_delete=models.CASCADE)

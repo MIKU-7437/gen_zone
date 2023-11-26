@@ -9,4 +9,17 @@ class IsOwnerOrReadOnly(BasePermission):
         if request.method in ['GET', 'HEAD', 'OPTIONS']:
             return True
 
-        return obj.owner == request.user
+        if hasattr(obj, 'course'):
+            return obj.course.owner == request.user
+
+        if hasattr(obj, 'owner'):
+            return obj.owner == request.user
+
+        if hasattr(obj, 'module') and hasattr(obj.module, 'course'):
+            return obj.module.course.owner == request.user
+        
+        if hasattr(obj, 'lesson') and hasattr(obj.lesson, 'module'):
+            return obj.lesson.module.course.owner == request.user
+
+        return False
+    
