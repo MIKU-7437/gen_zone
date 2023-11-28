@@ -9,7 +9,7 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         # Поля, которые будут включены в сериализацию
-        fields = ('username','first_name', 'last_name', 'email', 'role', 'photo')
+        fields = ('username','first_name', 'last_name', 'email', 'role', 'photo', 'courses')
         # fields = '__all__'
         # Установка полей только для чтения(не меняются)
         read_only_fields = ('email', 'username','role')

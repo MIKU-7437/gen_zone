@@ -1,7 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 
-
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
         # Создание пользователя без указания имени пользователя
@@ -36,6 +35,9 @@ class User(AbstractUser):
     role = models.IntegerField(choices=Roles.choices, default=Roles.STUDENT)
     updated_at = models.DateTimeField(auto_now=True)
     is_active = models.BooleanField(default=False)
+
+    #courses
+    courses = models.ManyToManyField('courses.Course', related_name='users')
     
     # Фотография пользователя
     photo = models.ImageField(

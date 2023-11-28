@@ -1,4 +1,5 @@
 from rest_framework.permissions import BasePermission
+from .models import Course
 
 class IsOwnerOrReadOnly(BasePermission):
     """
@@ -20,6 +21,21 @@ class IsOwnerOrReadOnly(BasePermission):
         
         if hasattr(obj, 'lesson') and hasattr(obj.lesson, 'module'):
             return obj.lesson.module.course.owner == request.user
+        return False
+    
+class HasCourse(BasePermission):
+    """
+    Пользователь может взаимодействовать с курсом только если он у него есть.
+    """
+    def has_object_permission(self, request, view, obj):
+
+        if hasattr(obj, 'course'):
+            return obj.course in request.user.courses.all()
+
+        if isinstance(obj, Course):
+            return obj in request.user.courses.all()
 
         return False
+
+
     

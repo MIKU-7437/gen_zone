@@ -1,13 +1,13 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status, generics
+from rest_framework import status, generics, viewsets
 from rest_framework.decorators import action
-from rest_framework.permissions import IsAuthenticatedOrReadOnly, AllowAny
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, AllowAny, IsAuthenticated
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 from .models import Course, Module, Lesson, Step, Content
 from .serializers import CourseSerializer, LessonSerializer, ModuleSerializer, StepSerializer, ContentSerializer
-from .permissions import IsOwnerOrReadOnly
+from .permissions import IsOwnerOrReadOnly, HasCourse
 from rest_framework.pagination import PageNumberPagination
         
 
@@ -43,25 +43,37 @@ class CourseListCreateView(generics.ListCreateAPIView):
         else:
             return Response({"error": "Только зарегистрированные пользователи могут создавать курсы"}, status=status.HTTP_401_UNAUTHORIZED)
 
-
-class CourseRetrieveUpdateView(generics.RetrieveUpdateDestroyAPIView):
-    """
-    Получение, редактирование и удаление курса:
-
-    Описание: Получает данные, редактирует и удаляет курс.
-    Параметры:
-    - id (в URL): Идентификатор курса.
-
-    Ответ:
-    - id: Идентификатор курса.
-    - title: Название курса.
-    - description: Описание курса.
-    - owner: Владелец курса.
-    """
+class CourseViewSet(viewsets.ModelViewSet):
     queryset = Course.objects.all()
     serializer_class = CourseSerializer
     permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
-    lookup_url_kwarg = 'id'
+    lookup_field = 'id'
+
+    @action(detail=True, methods=['get'])
+    def add_course(self, request, id=None):
+        course = self.get_object()
+        user = request.user
+
+        if course not in user.courses.all():
+            user.courses.add(course)
+            return Response({"success": f"Course {course.title} added to user {user.email}"},
+                            status=status.HTTP_200_OK)
+        else:
+            return Response({"error": f"User {user.email} already has access to course {course.title}"},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=True, methods=['get'])
+    def remove_course(self, request, id=None):
+        course = self.get_object()
+        user = request.user
+
+        if course in user.courses.all():
+            user.courses.remove(course)
+            return Response({"success": f"Course {course.title} removed from user {user.email}"},
+                            status=status.HTTP_200_OK)
+        else:
+            return Response({"error": f"User {user.email} does not have access to course {course.title}"},
+                            status=status.HTTP_400_BAD_REQUEST)
 
     def get_course(self, id):
         return get_object_or_404(Course, id=id)
@@ -72,11 +84,6 @@ class CourseRetrieveUpdateView(generics.RetrieveUpdateDestroyAPIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def update(self, request, id):
-        """
-        Параметры:
-        - title (необязательный): Название курса.
-        - description (необязательный): Описание курса.
-        """
         course = self.get_course(id)
         self.check_object_permissions(request, course)
 
@@ -92,8 +99,7 @@ class CourseRetrieveUpdateView(generics.RetrieveUpdateDestroyAPIView):
 
         course.delete()
 
-        return Response({"success": "Курс успешно удален"}, status=status.HTTP_204_NO_CONTENT)
-        
+        return Response({"success": "Course successfully deleted"}, status=status.HTTP_204_NO_CONTENT)
 
 class ModuleCreateView(generics.CreateAPIView):
     """
@@ -399,7 +405,7 @@ class StepDetailView(generics.RetrieveUpdateDestroyAPIView):
     - step_num: Номер шага.
     """
     serializer_class = StepSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
+    permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly, HasCourse]
 
     def get_object(self, request, *args, **kwargs):
         id = self.kwargs.get('id')

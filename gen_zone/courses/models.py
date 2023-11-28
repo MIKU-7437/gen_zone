@@ -1,5 +1,5 @@
 from django.db import models
-from users.models import User
+from users.models import User as UsersUser
 from django.core.exceptions import ValidationError
 
 
@@ -9,7 +9,7 @@ def course_preview_upload_path(instance, filename):
 class Course(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField()
-    owner = models.ForeignKey(User, on_delete=models.CASCADE)
+    owner = models.ForeignKey(UsersUser, on_delete=models.CASCADE)
     rating = models.IntegerField(default=0)
     preview = models.ImageField(upload_to=course_preview_upload_path, null=False, blank=False)
     price = models.IntegerField(default = 0)
