@@ -202,6 +202,8 @@ CORS_ALLOWED_ORIGINS = [
     'https://localhost:5173',
 ]
 
+CORS_ALLOW_CREDENTIALS = True
+
 CSRF_TRUSTED_ORIGINS = [
     'https://inquisitive-creature-production.up.railway.app',
     'https://inquisitive-creature-development.up.railway.app',

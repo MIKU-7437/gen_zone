@@ -16,6 +16,8 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.sites.shortcuts import get_current_site
 from django.urls import reverse
 import jwt
+from django.http import JsonResponse
+from django.utils import timezone
 
 #Testing imports
 from rest_framework.views import APIView
@@ -183,6 +185,36 @@ class VerifyEmailView(generics.GenericAPIView):
 
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
+
+    def post(self, request, *args, **kwargs):
+        response = super().post(request, *args, **kwargs)
+
+        refresh_token = response.data.get("refresh", None)
+        access_token = response.data.get("access", None)
+
+        if refresh_token and access_token:
+            response.set_cookie(
+                key="refresh",
+                value=refresh_token,
+                httponly=True,
+                secure=True,
+                samesite="Strict",
+                expires=timezone.now() + timezone.timedelta(days=1),
+            )
+
+            response.set_cookie(
+                key="access",
+                value=access_token,
+                httponly=True,
+                secure=True,
+                samesite="Strict",
+            )
+
+            response.data["detail"] = "Токены успешно получены и установлены в куки."
+
+            return response
+
+        return JsonResponse({"error": "Не удалось получить токены"}, status=400)
 
 #Testing logic
 class UserDetailView(APIView):
