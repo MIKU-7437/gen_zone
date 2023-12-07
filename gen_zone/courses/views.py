@@ -206,7 +206,7 @@ class ModuleDetailView(generics.RetrieveUpdateDestroyAPIView):
         course = get_object_or_404(Course, id=module.course.id)
 
         module.delete()
-
+        #атомарные транзакции ACID
         modules_to_update = course.modules.filter(module_num__gt=module_num)
         for mod in modules_to_update:
             mod.module_num -= 1
