@@ -239,7 +239,7 @@ class UserDetailView(APIView):
         # Получение объекта пользователя
         user = self.get_object()
         # Сериализация и возврат данных пользователя
-        serializer = UserSerializer(user)
+        serializer = UserSerializer(user, context={"request": request})
         return Response(serializer.data)
 
     # Функция которая будет срабатывать только на PUT-запросы(обновить данные и пользователе)
@@ -301,7 +301,8 @@ class AllUsersView(APIView):
         users = User.objects.all()
 
         # Сериализация и возврат данных всех пользователей
-        serializer = UserSerializer(users, many=True)
+        serializer = UserSerializer(users, many=True, context={"request": request})
+        # serializer = UserSerializer(users, many=True)
         return Response(serializer.data)
 
 

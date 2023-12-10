@@ -4,14 +4,10 @@ from django.contrib.auth.hashers import make_password
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 class UserSerializer(serializers.ModelSerializer):
-    # Сериализатор для модели User, используемый для преобразования данных пользователя
 
     class Meta:
         model = User
-        # Поля, которые будут включены в сериализацию
-        fields = ('username','first_name', 'last_name', 'email', 'role', 'photo', 'courses')
-        # fields = '__all__'
-        # Установка полей только для чтения(не меняются)
+        fields = ('id', 'username','first_name', 'last_name', 'email', 'role', 'photo', 'courses')
         read_only_fields = ('email', 'username','role')
 
     # redacting 'username' field depending on 'first_name' and 'last_name'
