@@ -37,7 +37,7 @@ class User(AbstractUser):
     is_active = models.BooleanField(default=False)
 
     #courses
-    courses = models.ManyToManyField('courses.Course', related_name='users')
+    courses = models.ManyToManyField('courses.Course', related_name='users', blank=True)
     
     # Фотография пользователя
     photo = models.ImageField(

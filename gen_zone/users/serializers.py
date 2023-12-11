@@ -75,7 +75,7 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
             'last_name': self.user.last_name,
             "username": self.user.username,
             'role': self.user.role,
-            'photo': str(self.user.photo) if self.user.photo else None,
+            'photo': self.user.photo.url,
         }
 
         return data
