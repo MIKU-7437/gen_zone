@@ -6,6 +6,7 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from django.core.exceptions import ValidationError
 from rest_framework_simplejwt.views import TokenObtainPairView
 from .serializers import CustomTokenObtainPairSerializer
+from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
 
 from rest_framework.response import Response
 from rest_framework.decorators import action
@@ -186,35 +187,15 @@ class VerifyEmailView(generics.GenericAPIView):
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
 
-    def post(self, request, *args, **kwargs):
-        response = super().post(request, *args, **kwargs)
+    def post(self, request, *args, **kwargs) -> Response:
+        serializer = self.get_serializer(data=request.data, context={"request": request})
 
-        refresh_token = response.data.get("refresh", None)
-        access_token = response.data.get("access", None)
+        try:
+            serializer.is_valid(raise_exception=True)
+        except TokenError as e:
+            raise InvalidToken(e.args[0])
 
-        if refresh_token and access_token:
-            response.set_cookie(
-                key="refresh",
-                value=refresh_token,
-                httponly=True,
-                secure=True,
-                samesite="Strict",
-                expires=timezone.now() + timezone.timedelta(days=1),
-            )
-
-            response.set_cookie(
-                key="access",
-                value=access_token,
-                httponly=True,
-                secure=True,
-                samesite="Strict",
-            )
-
-            response.data["detail"] = "Токены успешно получены и установлены в куки."
-
-            return response
-
-        return JsonResponse({"error": "Не удалось получить токены"}, status=400)
+        return Response(serializer.validated_data, status=status.HTTP_200_OK)
 
 #Testing logic
 class UserDetailView(APIView):
@@ -238,8 +219,8 @@ class UserDetailView(APIView):
         """
         # Получение объекта пользователя
         user = self.get_object()
-        # Сериализация и возврат данных пользователя
-        serializer = UserSerializer(user)
+        # Сериализация и возврат данных пользователя, передаем запрос в контексте для создания абсолютного url
+        serializer = UserSerializer(user, context={"request": request})
         return Response(serializer.data)
 
     # Функция которая будет срабатывать только на PUT-запросы(обновить данные и пользователе)
@@ -261,7 +242,7 @@ class UserDetailView(APIView):
             return Response({'error': 'You do not have permission to update this user.'}, status=status.HTTP_403_FORBIDDEN)
 
         # Сериализация и обновление данных пользователя
-        serializer = UserSerializer(user, data=request.data)
+        serializer = UserSerializer(user, data=request.data, context={"request": request})
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
@@ -301,7 +282,7 @@ class AllUsersView(APIView):
         users = User.objects.all()
 
         # Сериализация и возврат данных всех пользователей
-        serializer = UserSerializer(users, many=True)
+        serializer = UserSerializer(users, context={"request": request}, many=True)
         return Response(serializer.data)
 
 

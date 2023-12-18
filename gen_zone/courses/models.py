@@ -1,10 +1,11 @@
 from django.db import models
 from users.models import User as UsersUser
 from django.core.exceptions import ValidationError
+from django.core.management.utils import get_random_secret_key
 
 
 def course_preview_upload_path(instance, filename):
-    return f'courses/{instance.title}_{instance.id}/preview/{filename}'
+    return f'courses/{instance.title}_{get_random_secret_key()[:8]}/preview/{filename}'
 
 class Course(models.Model):
     title = models.CharField(max_length=255)

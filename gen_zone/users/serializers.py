@@ -19,6 +19,11 @@ class UserSerializer(serializers.ModelSerializer):
 
         serializer = UserSerializer(instance, data=validated_data)
         return super().update(instance, validated_data)
+    # return absolute_url for photo example:http://127.0.0.1:8000/media/customer_photos/default-profile-picture.jpg
+    def get_photo_url(self, user):
+        request = self.context.get('request')
+        photo_url = user.photo.url
+        return request.build_absolute_uri(photo_url)
 
 
 class RegisterSerializer(serializers.ModelSerializer):
@@ -75,10 +80,15 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
             'last_name': self.user.last_name,
             "username": self.user.username,
             'role': self.user.role,
-            'photo': self.user.photo.url,
+            'photo': self.get_photo_url(self.user),
         }
 
         return data
+    # return absolute_url for photo example:http://127.0.0.1:8000/media/customer_photos/default-profile-picture.jpg
+    def get_photo_url(self, user):
+        request = self.context.get('request')
+        photo_url = user.photo.url
+        return request.build_absolute_uri(photo_url)
 
 class ChangePasswordSerializer(serializers.Serializer):
     model = User
