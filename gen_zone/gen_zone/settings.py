@@ -52,9 +52,12 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'drf_yasg',
+    'channels',
+    'channels_redis',
 
     'users',
     'courses',
+    'chat',
 ]
 
 MIDDLEWARE = [
@@ -88,6 +91,37 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'gen_zone.wsgi.application'
 
+ASGI_APPLICATION = 'gen_zone.asgi.application'  
+
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        # "CONFIG": {
+        #     "hosts": [(os.environ.get('REDIS_HOST'), os.environ.get('REDIS_PORT'))],
+        #     "password": "MjfcDLAcmFAoIIOgLJApbDBmLGcJPbNl",
+        # },
+         "CONFIG": {
+            "hosts": [f"redis://:{os.environ.get('REDIS_PASSWORD')}@{os.environ.get('REDIS_HOST')}:{os.environ.get('REDIS_PORT')}/0"],
+            "symmetric_encryption_keys":[SECRET_KEY],
+        }
+    },
+}
+# CHANNEL_LAYERS = {
+#     "default": {
+#         "BACKEND": "channels.layers.InMemoryChannelLayer"
+#     }
+# }
+# REDIS_HOST=roundhouse.proxy.rlwy.net
+# REDIS_PORT=36288
+# CHANNEL_LAYERS = {
+#     'default': {
+#         'BACKEND': 'channels_redis.core.RedisChannelLayer',
+#         'CONFIG': {
+#             "hosts": [('127.0.0.1', 6379)],
+#         },
+#     },
+# }
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases

@@ -38,6 +38,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/account/', include('users.urls')),
     path('api/courses/', include('courses.urls')),
+    path('api/conversations/', include('chat.urls')) ,
+    # path('ws/', include('chat.routing.websocket_urlpatterns')),
     #Test
     path('', HelloWorldView.as_view(), name='hello_world'),
     re_path(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
